@@ -654,7 +654,7 @@ def home_page(scoreboard_df, hitboxes, pitboxes, currentime,
 
     # Update the placeholders with the new dataframes
     with scoreboard_container.container():
-        scoreboard_container.dataframe(scoreboard_df, width=300, height=375, hide_index=True)
+        scoreboard_container.dataframe(scoreboard_df, width=300, height=270, hide_index=True)
     
     with pitching_container.container():
         pitching_container.dataframe(styled_pitboxes, hide_index=True, width=420, height=600)
@@ -664,7 +664,6 @@ def home_page(scoreboard_df, hitboxes, pitboxes, currentime,
 
     # Return the containers to reuse them in the next call
     return scoreboard_container, pitching_container, hitting_container
-
 
 def pitcher_detail_page(p_data, current_time, pitcher_detail_dataframe_container=None):
     # Sort data by Whiffs
