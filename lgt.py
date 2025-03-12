@@ -954,7 +954,7 @@ def main():
                 check_status_result == 'Wait'
                 time.sleep(60*10)
         
-        secs_to_wait = 30
+        secs_to_wait = 120
         #st.write(f'Waiting {secs_to_wait} seconds')
         time.sleep(secs_to_wait)
 
