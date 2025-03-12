@@ -1,0 +1,234 @@
+,team_name,team_id,team_abbrev,parent_name,parent_id,parent_abbrev
+0,Baltimore Orioles,110,BAL,Baltimore Orioles,110,BAL
+1,Cincinnati Reds,113,CIN,Cincinnati Reds,113,CIN
+2,New York Mets,121,NYM,New York Mets,121,NYM
+3,Miami Marlins,146,MIA,Miami Marlins,146,MIA
+4,St. Louis Cardinals,138,STL,St. Louis Cardinals,138,STL
+5,Washington Nationals,120,WSH,Washington Nationals,120,WSH
+6,Philadelphia Phillies,143,PHI,Philadelphia Phillies,143,PHI
+7,Pittsburgh Pirates,134,PIT,Pittsburgh Pirates,134,PIT
+8,Kansas City Royals,118,KC,Kansas City Royals,118,KC
+9,New York Yankees,147,NYY,New York Yankees,147,NYY
+10,Detroit Tigers,116,DET,Detroit Tigers,116,DET
+11,Toronto Blue Jays,141,TOR,Toronto Blue Jays,141,TOR
+12,Cleveland Guardians,114,CLE,Cleveland Guardians,114,CLE
+13,Tampa Bay Rays,139,TB,Tampa Bay Rays,139,TB
+14,Milwaukee Brewers,158,MIL,Milwaukee Brewers,158,MIL
+15,Boston Red Sox,111,BOS,Boston Red Sox,111,BOS
+16,Arizona Diamondbacks,109,ARI,Arizona Diamondbacks,109,ARI
+17,Atlanta Braves,144,ATL,Atlanta Braves,144,ATL
+18,Seattle Mariners,136,SEA,Seattle Mariners,136,SEA
+19,Houston Astros,117,HOU,Houston Astros,117,HOU
+20,Oakland Athletics,133,OAK,Oakland Athletics,133,OAK
+21,Chicago White Sox,145,CWS,Chicago White Sox,145,CWS
+22,Los Angeles Dodgers,119,LAD,Los Angeles Dodgers,119,LAD
+23,Colorado Rockies,115,COL,Colorado Rockies,115,COL
+24,Texas Rangers,140,TEX,Texas Rangers,140,TEX
+25,Los Angeles Angels,108,LAA,Los Angeles Angels,108,LAA
+26,Minnesota Twins,142,MIN,Minnesota Twins,142,MIN
+27,San Diego Padres,135,SD,San Diego Padres,135,SD
+28,Chicago Cubs,112,CHC,Chicago Cubs,112,CHC
+29,San Francisco Giants,137,SF,San Francisco Giants,137,SF
+30,Scranton/Wilkes-Barre RailRiders,531,SWB,New York Yankees,147,NYY
+31,Rochester Red Wings,534,ROC,Washington Nationals,120,WSH
+32,Omaha Storm Chasers,541,OMA,Kansas City Royals,118,KC
+33,Syracuse Mets,552,SYR,New York Mets,121,NYM
+34,Lehigh Valley IronPigs,1410,LHV,Philadelphia Phillies,143,PHI
+35,Durham Bulls,234,DUR,Tampa Bay Rays,139,TB
+36,Columbus Clippers,445,COL,Cleveland Guardians,114,CLE
+37,Louisville Bats,416,LOU,Cincinnati Reds,113,CIN
+38,Indianapolis Indians,484,IND,Pittsburgh Pirates,134,PIT
+39,Toledo Mud Hens,512,TOL,Detroit Tigers,116,DET
+40,Worcester Red Sox,533,WOR,Boston Red Sox,111,BOS
+41,Buffalo Bisons,422,BUF,Toronto Blue Jays,141,TOR
+42,Jacksonville Jumbo Shrimp,564,JAX,Miami Marlins,146,MIA
+43,Gwinnett Stripers,431,GWN,Atlanta Braves,144,ATL
+44,Sacramento River Cats,105,SAC,San Francisco Giants,137,SF
+45,Round Rock Express,102,RR,Texas Rangers,140,TEX
+46,Charlotte Knights,494,CLT,Chicago White Sox,145,CWS
+47,Nashville Sounds,556,NAS,Milwaukee Brewers,158,MIL
+48,Norfolk Tides,568,NOR,Baltimore Orioles,110,BAL
+49,Memphis Redbirds,235,MEM,St. Louis Cardinals,138,STL
+50,Sugar Land Space Cowboys,5434,SUG,Houston Astros,117,HOU
+51,Oklahoma City Dodgers,238,OKC,Los Angeles Dodgers,119,LAD
+52,Iowa Cubs,451,IOW,Chicago Cubs,112,CHC
+53,St. Paul Saints,1960,STP,Minnesota Twins,142,MIN
+54,Las Vegas Aviators,400,LV,Oakland Athletics,133,OAK
+55,Albuquerque Isotopes,342,ABQ,Colorado Rockies,115,COL
+56,Salt Lake Bees,561,SL,Los Angeles Angels,108,LAA
+57,Reno Aces,2310,RNO,Arizona Diamondbacks,109,ARI
+58,El Paso Chihuahuas,4904,ELP,San Diego Padres,135,SD
+59,Tacoma Rainiers,529,TAC,Seattle Mariners,136,SEA
+60,Reading Fightin Phils,522,REA,Philadelphia Phillies,143,PHI
+61,Erie SeaWolves,106,ERI,Detroit Tigers,116,DET
+62,Somerset Patriots,1956,SOM,New York Yankees,147,NYY
+63,Richmond Flying Squirrels,3410,RIC,San Francisco Giants,137,SF
+64,Altoona Curve,452,ALT,Pittsburgh Pirates,134,PIT
+65,Bowie Baysox,418,BOW,Baltimore Orioles,110,BAL
+66,New Hampshire Fisher Cats,463,NH,Toronto Blue Jays,141,TOR
+67,Binghamton Rumble Ponies,505,BNG,New York Mets,121,NYM
+68,Portland Sea Dogs,546,POR,Boston Red Sox,111,BOS
+69,Hartford Yard Goats,538,HFD,Colorado Rockies,115,COL
+70,Harrisburg Senators,547,HBG,Washington Nationals,120,WSH
+71,Akron RubberDucks,402,AKR,Cleveland Guardians,114,CLE
+72,Birmingham Barons,247,BIR,Chicago White Sox,145,CWS
+73,Tennessee Smokies,553,TNS,Chicago Cubs,112,CHC
+74,Rocket City Trash Pandas,559,RCT,Los Angeles Angels,108,LAA
+75,Chattanooga Lookouts,498,CHA,Cincinnati Reds,113,CIN
+76,Mississippi Braves,430,MIS,Atlanta Braves,144,ATL
+77,Pensacola Blue Wahoos,4124,PNS,Miami Marlins,146,MIA
+78,Montgomery Biscuits,421,MTG,Tampa Bay Rays,139,TB
+79,Biloxi Shuckers,5015,BLX,Milwaukee Brewers,158,MIL
+80,San Antonio Missions,510,SA,San Diego Padres,135,SD
+81,Midland RockHounds,237,MID,Oakland Athletics,133,OAK
+82,Frisco RoughRiders,540,FRI,Texas Rangers,140,TEX
+83,Springfield Cardinals,440,SPR,St. Louis Cardinals,138,STL
+84,Arkansas Travelers,574,ARK,Seattle Mariners,136,SEA
+85,Tulsa Drillers,260,TUL,Los Angeles Dodgers,119,LAD
+86,Corpus Christi Hooks,482,CC,Houston Astros,117,HOU
+87,Amarillo Sod Poodles,5368,AMA,Arizona Diamondbacks,109,ARI
+88,Northwest Arkansas Naturals,1350,NWA,Kansas City Royals,118,KC
+89,Wichita Wind Surge,3898,WCH,Minnesota Twins,142,MIN
+90,Everett AquaSox,403,EVE,Seattle Mariners,136,SEA
+91,Vancouver Canadians,435,VAN,Toronto Blue Jays,141,TOR
+92,Jersey Shore BlueClaws,427,JS,Philadelphia Phillies,143,PHI
+93,Wilmington Blue Rocks,426,WIL,Washington Nationals,120,WSH
+94,Winston-Salem Dash,580,WS,Chicago White Sox,145,CWS
+95,Greensboro Grasshoppers,477,GBO,Pittsburgh Pirates,134,PIT
+96,Aberdeen IronBirds,488,ABD,Baltimore Orioles,110,BAL
+97,Asheville Tourists,573,ASH,Houston Astros,117,HOU
+98,Dayton Dragons,459,DAY,Cincinnati Reds,113,CIN
+99,West Michigan Whitecaps,582,WM,Detroit Tigers,116,DET
+100,Rome Braves,432,ROM,Atlanta Braves,144,ATL
+101,Hickory Crawdads,448,HIC,Texas Rangers,140,TEX
+102,Lansing Lugnuts,499,LAN,Oakland Athletics,133,OAK
+103,Great Lakes Loons,456,GL,Los Angeles Dodgers,119,LAD
+104,Brooklyn Cyclones,453,BRK,New York Mets,121,NYM
+105,Hudson Valley Renegades,537,HV,New York Yankees,147,NYY
+106,Lake County Captains,437,LC,Cleveland Guardians,114,CLE
+107,South Bend Cubs,550,SB,Chicago Cubs,112,CHC
+108,Bowling Green Hot Rods,2498,BG,Tampa Bay Rays,139,TB
+109,Greenville Drive,428,GVL,Boston Red Sox,111,BOS
+110,Quad Cities River Bandits,565,QC,Kansas City Royals,118,KC
+111,Beloit Sky Carp,554,BEL,Miami Marlins,146,MIA
+112,Fort Wayne TinCaps,584,FW,San Diego Padres,135,SD
+113,Peoria Chiefs,443,PEO,St. Louis Cardinals,138,STL
+114,Cedar Rapids Kernels,492,CR,Minnesota Twins,142,MIN
+115,Wisconsin Timber Rattlers,572,WIS,Milwaukee Brewers,158,MIL
+116,Hillsboro Hops,419,HIL,Arizona Diamondbacks,109,ARI
+117,Eugene Emeralds,461,EUG,San Francisco Giants,137,SF
+118,Spokane Indians,486,SPO,Colorado Rockies,115,COL
+119,Tri-City Dust Devils,460,TRI,Los Angeles Angels,108,LAA
+120,Palm Beach Cardinals,279,PMB,St. Louis Cardinals,138,STL
+121,St. Lucie Mets,507,SLU,New York Mets,121,NYM
+122,Daytona Tortugas,450,DBT,Cincinnati Reds,113,CIN
+123,Jupiter Hammerheads,479,JUP,Miami Marlins,146,MIA
+124,Delmarva Shorebirds,548,DEL,Baltimore Orioles,110,BAL
+125,Lynchburg Hillcats,481,LYN,Cleveland Guardians,114,CLE
+126,Dunedin Blue Jays,424,DUN,Toronto Blue Jays,141,TOR
+127,Clearwater Threshers,566,CLR,Philadelphia Phillies,143,PHI
+128,Lakeland Flying Tigers,570,LAK,Detroit Tigers,116,DET
+129,Bradenton Marauders,3390,BRD,Pittsburgh Pirates,134,PIT
+130,Columbia Fireflies,3705,COL,Kansas City Royals,118,KC
+131,Kannapolis Cannon Ballers,487,KAN,Chicago White Sox,145,CWS
+132,Salem Red Sox,414,SAL,Boston Red Sox,111,BOS
+133,Fredericksburg Nationals,436,FBG,Washington Nationals,120,WSH
+134,Down East Wood Ducks,485,DE,Texas Rangers,140,TEX
+135,Charleston RiverDogs,233,CSC,Tampa Bay Rays,139,TB
+136,Myrtle Beach Pelicans,521,MB,Chicago Cubs,112,CHC
+137,Augusta GreenJackets,478,AUG,Atlanta Braves,144,ATL
+138,Carolina Mudcats,249,CAR,Milwaukee Brewers,158,MIL
+139,Fayetteville Woodpeckers,3712,FAY,Houston Astros,117,HOU
+140,Rancho Cucamonga Quakes,526,RC,Los Angeles Dodgers,119,LAD
+141,San Jose Giants,476,SJ,San Francisco Giants,137,SF
+142,Fresno Grizzlies,259,FRE,Colorado Rockies,115,COL
+143,Modesto Nuts,515,MOD,Seattle Mariners,136,SEA
+144,Visalia Rawhide,516,VIS,Arizona Diamondbacks,109,ARI
+145,Inland Empire 66ers,401,IE,Los Angeles Angels,108,LAA
+146,Stockton Ports,524,STK,Oakland Athletics,133,OAK
+147,Lake Elsinore Storm,103,LE,San Diego Padres,135,SD
+148,DSL Marlins,619,DSL MRL,Miami Marlins,146,MIA
+149,DSL LAD Mega,612,DSL LADM,Los Angeles Dodgers,119,LAD
+150,FCL Mets,468,MET,New York Mets,121,NYM
+151,FCL Cardinals,1370,CAR,St. Louis Cardinals,138,STL
+152,FCL Blue Jays,1390,BLU,Toronto Blue Jays,141,TOR
+153,FCL Phillies,469,PHI,Philadelphia Phillies,143,PHI
+154,FCL Astros Orange,2000,ASO,Houston Astros,117,HOU
+155,FCL Marlins,467,MRL,Miami Marlins,146,MIA
+156,DSL Tigers 2,2132,DSL TIG2,Detroit Tigers,116,DET
+157,DSL Tigers 1,631,DSL TIG1,Detroit Tigers,116,DET
+158,DSL D-backs Black,610,DSL DBB,Arizona Diamondbacks,109,ARI
+159,DSL D-backs Red,5087,DSL DBR,Arizona Diamondbacks,109,ARI
+160,DSL Mariners,618,DSL SEA,Seattle Mariners,136,SEA
+161,DSL Angels,600,DSL ANG,Los Angeles Angels,108,LAA
+162,DSL Cubs Blue,609,DSL CUBB,Chicago Cubs,112,CHC
+163,DSL Mets 1,620,DSL MET1,New York Mets,121,NYM
+164,DSL TEX Blue,625,DSL TEXB,Texas Rangers,140,TEX
+165,DSL Brewers 1,607,DSL BRW1,Milwaukee Brewers,158,MIL
+166,DSL BOS Blue,626,DSL BOSB,Boston Red Sox,111,BOS
+167,DSL Athletics,602,DSL ATH,Oakland Athletics,133,OAK
+168,DSL KC Glass,630,DSL KCG,Kansas City Royals,118,KC
+169,DSL BOS Red,627,DSL BOSR,Boston Red Sox,111,BOS
+170,DSL Twins,632,DSL TWI,Minnesota Twins,142,MIN
+171,DSL Rockies,629,DSL ROC,Colorado Rockies,115,COL
+172,DSL Padres,622,DSL PAD,San Diego Padres,135,SD
+173,DSL White Sox,633,DSL WSX,Chicago White Sox,145,CWS
+174,DSL NYY Bombers,634,DSL NYYB,New York Yankees,147,NYY
+175,DSL NYY Yankees,635,DSL NYY,New York Yankees,147,NYY
+176,DSL Nationals,1270,DSL NAT,Washington Nationals,120,WSH
+177,DSL Giants Orange,615,DSL GIO,San Francisco Giants,137,SF
+178,DSL Rays,1611,DSL RAY,Tampa Bay Rays,139,TB
+179,DSL HOU Blue,601,DSL HOUB,Houston Astros,117,HOU
+180,DSL Brewers 2,2101,DSL BRW2,Milwaukee Brewers,158,MIL
+181,DSL Phillies Red,623,DSL PHR,Philadelphia Phillies,143,PHI
+182,DSL Miami,2127,DSL MIA,Miami Marlins,146,MIA
+183,DSL Braves,605,DSL BRA,Atlanta Braves,144,ATL
+184,DSL CLE Blue,616,DSL CLEB,Cleveland Guardians,114,CLE
+185,DSL KC Stewart,2128,DSL KCS,Kansas City Royals,118,KC
+186,DSL Giants Black,2134,DSL GIB,San Francisco Giants,137,SF
+187,DSL Cardinals,608,DSL CAR,St. Louis Cardinals,138,STL
+188,DSL PIT Black,624,DSL PITB,Pittsburgh Pirates,134,PIT
+189,DSL Cubs Red,2270,DSL CUBR,Chicago Cubs,112,CHC
+190,DSL Blue Jays,604,DSL BLJ,Toronto Blue Jays,141,TOR
+191,DSL BAL Orange,3130,DSL BALO,Baltimore Orioles,110,BAL
+192,DSL Phillies White,5085,DSL PHW,Philadelphia Phillies,143,PHI
+193,DSL LAD Bautista,611,DSL LADB,Los Angeles Dodgers,119,LAD
+194,DSL Colorado,2131,DSL COL,Colorado Rockies,115,COL
+195,DSL TEX Red,2413,DSL TEXR,Texas Rangers,140,TEX
+196,DSL HOU Orange,5005,DSL HOUO,Houston Astros,117,HOU
+197,DSL PIT Gold,4404,DSL PITG,Pittsburgh Pirates,134,PIT
+198,DSL Mets 2,2117,DSL MET2,New York Mets,121,NYM
+199,DSL Tampa Bay,5086,DSL TB,Tampa Bay Rays,139,TB
+200,FCL Red Sox,471,RSX,Boston Red Sox,111,BOS
+201,FCL Twins,474,TWI,Minnesota Twins,142,MIN
+202,FCL Yankees,475,YNK,New York Yankees,147,NYY
+203,FCL Tigers,473,TIG,Detroit Tigers,116,DET
+204,FCL Pirates,470,PIR,Pittsburgh Pirates,134,PIT
+205,FCL Orioles,599,ORI,Baltimore Orioles,110,BAL
+206,FCL Nationals,466,NAT,Washington Nationals,120,WSH
+207,FCL Astros Blue,1998,ASB,Houston Astros,117,HOU
+208,FCL Braves,464,BRA,Atlanta Braves,144,ATL
+209,FCL Rays,2003,RAY,Tampa Bay Rays,139,TB
+210,ACL Cubs,407,CUB,Chicago Cubs,112,CHC
+211,ACL Brewers Gold,406,BRWG,Milwaukee Brewers,158,MIL
+212,ACL Angels,404,ANG,Los Angeles Angels,108,LAA
+213,ACL Giants Black,408,GNTB,San Francisco Giants,137,SF
+214,ACL Royals,412,ROY,Kansas City Royals,118,KC
+215,ACL Mariners,409,MRN,Seattle Mariners,136,SEA
+216,ACL White Sox,1997,WSX,Chicago White Sox,145,CWS
+217,ACL Rangers,411,RAN,Texas Rangers,140,TEX
+218,ACL Padres,410,PAD,San Diego Padres,135,SD
+219,ACL Dodgers,5427,DOD,Los Angeles Dodgers,119,LAD
+220,ACL Giants Orange,5370,GNTO,San Francisco Giants,137,SF
+221,ACL D-backs Black,1991,DIAB,Arizona Diamondbacks,109,ARI
+222,ACL Reds,3430,RED,Cincinnati Reds,113,CIN
+223,ACL Athletics,5426,ATH,Oakland Athletics,133,OAK
+224,ACL Brewers Blue,5430,BRWB,Milwaukee Brewers,158,MIL
+225,ACL Guardians,5374,GUA,Cleveland Guardians,114,CLE
+226,ACL D-backs Red,6038,DIAR,Arizona Diamondbacks,109,ARI
+227,ACL Rockies,1994,RCK,Colorado Rockies,115,COL
+228,Tampa Tarpons,587,TAM,New York Yankees,147,NYY
+229,Fort Myers Mighty Mussels,509,FTM,Minnesota Twins,142,MIN
+230,DSL CLE Red,5506,DSL CLER,Cleveland Guardians,114,CLE
+231,DSL BAL Black,621,DSL BALB,Baltimore Orioles,110,BAL
+232,DSL Reds,628,DSL REDS,Cincinnati Reds,113,CIN
