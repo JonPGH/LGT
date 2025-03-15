@@ -355,6 +355,7 @@ def get_game_logs(game):
 
 def savAddOns(savdata):
   pdf = savdata.copy()
+  #st.write(pdf)
 
   pdf['away_team_aff_id'] = pdf['away_team_id'].map(affdict)
   pdf['away_team_aff'] = pdf['away_team_aff_id'].map(affdict_abbrevs)
@@ -688,6 +689,7 @@ def pitcher_detail_page(p_data, current_time, pitcher_detail_dataframe_container
 
     return pitcher_detail_dataframe_container
 
+
 def pitch_mix_detail(pmix_data, current_time, dropdown_container=None, dataframe_container=None):
     # Sort and fill NaN values
     pmix_data = pmix_data.sort_values(by=['Pitcher', 'PC'], ascending=[True, False])
@@ -930,11 +932,11 @@ def main():
                     now_eastern = datetime.datetime.now(eastern)
                     current_time = now_eastern.strftime("%I:%M")
                     pitcher_detail_dataframe_container=pitcher_detail_page(p_data,current_time, pitcher_detail_dataframe_container)
+
                 elif selected_page == 'Pitch Mix Data':
                     import datetime
                     now_eastern = datetime.datetime.now(eastern)
                     current_time = now_eastern.strftime("%I:%M")
-                    #pmix_container = pitch_mix_detail(pmix_data,current_time,pmix_container)
                     pitch_mix_dropdown_container, pmix_container = pitch_mix_detail(
                         pmix_data, current_time, pitch_mix_dropdown_container, pmix_container
                     )
@@ -954,7 +956,7 @@ def main():
                 check_status_result == 'Wait'
                 time.sleep(60*10)
         
-        secs_to_wait = 120
+        secs_to_wait = 30
         #st.write(f'Waiting {secs_to_wait} seconds')
         time.sleep(secs_to_wait)
 
