@@ -23,7 +23,9 @@ affdict_abbrevs = dict(zip(affdf.team_id, affdf.parent_abbrev))
 team_abbrev_look = dict(zip(affdf.team_name,affdf.team_abbrev))
 idlookup_df = pd.read_csv('{}/IDLookupTable.csv'.format(file_path))
 p_lookup_dict = dict(zip(idlookup_df.MLBID, idlookup_df.PLAYERNAME))
-
+pmove25 = pd.read_csv('{}/pitchmovement25.csv'.format(file_path))
+pmove25 = pmove25.rename({'pfx_x': 'Avg Horiz', 'pfx_z': 'Avg Vert', 'release_speed': 'Avg Velo',
+                          'player_name': 'Pitcher', 'pitch_type': 'Pitch'}, axis=1)
 lsaclass = pd.read_csv('{}/lsaclass.csv'.format(file_path))
 
 def dropUnnamed(df):
@@ -244,7 +246,7 @@ def get_MILB_PBP_Live(game_info_dict):
                                   'pitch_type':pitchtype,'balls': ballcount,'strikes':strikecount,
                                   'release_speed':startspeed, 'end_pitch_speed': endspeed,'zone_top':kzonetop,
                                   'zone_bot':kzonebot,'zone_width':kzonewidth,'zone_depth':kzonedepth,'ay':ay,
-                                  'ax':ax,'pfx_x':pfxx,'pfx_z':pfxz,'px':px,'pz':pz,'break_angle':breakangle,
+                                  'ax':ax,'pfx_x': pfxx,'pfx_z':pfxz,'px':px,'pz':pz,'break_angle':breakangle,
                                   'break_length':breaklength,'break_y':break_y,'zone':zone,
                                   'launch_speed': launchspeed, 'launch_angle': launchangle,# 'hit_distance': total_distance,
                                   'bb_type':bb_type,'hit_location': location,'hit_coord_x': coord_x,
@@ -609,9 +611,10 @@ def getPData(livedb,all_pitboxes,cplist):
     return(pdatadf)
 
 def getPMixData(livedb,cplist):
-    velodata = livedb.groupby(['player_name','PitcherTeam_aff','pitch_type'],as_index=False)['release_speed'].mean()
+    velodata = livedb.groupby(['player_name','PitcherTeam_aff','pitch_type'],as_index=False)[['release_speed','pfx_x','pfx_z']].mean()
     velodata = velodata.round(1)
-    velodata.columns=['Pitcher','Team','Pitch','Velo']
+    velodata.columns=['Pitcher','Team','Pitch','Velo','Horiz','Vert']
+    velodata = velodata.round(2)
 
     mixdata = livedb.groupby(['player_name','pitcher','PitcherTeam_aff','pitch_type'],as_index=False)[['PitchesThrown','IsStrike','IsBall','IsBIP','IsHit','IsHomer','IsSwStr','IsGB','IsLD','IsFB','IsBrl','PA_flag','DP','IsStrikeout','IsWalk']].sum()
     mixdata['SwStr%'] = round(mixdata['IsSwStr']/mixdata['PitchesThrown'],3)
@@ -621,7 +624,16 @@ def getPMixData(livedb,cplist):
     mixdata = mixdata[['player_name','PitcherTeam_aff','pitch_type','PitchesThrown','IsSwStr','SwStr%','Strike%','Ball%','Brl%']]
     mixdata.columns=['Pitcher','Team','Pitch','PC','Whiffs','SwStr%','Strike%','Ball%','Brl%']
     mixdata = pd.merge(mixdata,velodata,on=['Pitcher','Team','Pitch'])
-    mixdata = mixdata[['Pitcher','Team','Pitch','PC','Velo','Whiffs','SwStr%','Strike%','Ball%','Brl%']]
+    mixdata = mixdata[['Pitcher','Team','Pitch','PC','Velo','Whiffs','SwStr%','Strike%','Ball%','Brl%','Horiz','Vert']]
+    #pmove25 = pmove25.round(2)
+    mixdata = pd.merge(mixdata,pmove25[['Pitcher','Pitch','Avg Velo', 'Avg Horiz', 'Avg Vert']],on=['Pitcher','Pitch'])
+    mixdata['Avg Velo'] = round(mixdata['Avg Velo'],1)
+    mixdata['Avg Horiz'] = round(mixdata['Avg Horiz'],1)
+    mixdata['Avg Vert'] = round(mixdata['Avg Vert'],1)
+    mixdata['Velo Diff'] = mixdata['Velo']-mixdata['Avg Velo']
+    mixdata['Horiz Diff'] = mixdata['Horiz']-mixdata['Avg Horiz']
+    mixdata['Vert Diff'] = mixdata['Vert']-mixdata['Avg Vert']
+    mixdata = mixdata.drop(['Avg Velo','Avg Horiz','Avg Vert'],axis=1)
     return(mixdata)
 
 # Main content functions
@@ -689,7 +701,6 @@ def pitcher_detail_page(p_data, current_time, pitcher_detail_dataframe_container
 
     return pitcher_detail_dataframe_container
 
-
 def pitch_mix_detail(pmix_data, current_time, dropdown_container=None, dataframe_container=None):
     # Sort and fill NaN values
     pmix_data = pmix_data.sort_values(by=['Pitcher', 'PC'], ascending=[True, False])
@@ -703,24 +714,27 @@ def pitch_mix_detail(pmix_data, current_time, dropdown_container=None, dataframe
         dataframe_container = st.empty()  # Placeholder for the dataframe
 
     # Get unique pitcher names and add "All Pitchers" option
-    pitcher_options = ['All Pitchers'] + sorted(pmix_data['Pitcher'].unique().tolist())
+    #pitcher_options = ['All Pitchers'] + sorted(pmix_data['Pitcher'].unique().tolist())
 
     # Add dropdown for pitcher selection within its placeholder
-    with dropdown_container.container():
-        selected_pitcher = st.selectbox("Select Pitcher", pitcher_options, key=f"pitch_mix_select_{id(pmix_data)}")
+    #with dropdown_container.container():
+        #selected_pitcher = st.selectbox("Select Pitcher", pitcher_options, key=f"pitch_mix_select_{id(pmix_data)}")
 
     # Filter dataframe based on selected pitcher
-    if selected_pitcher == 'All Pitchers':
-        filtered_data = pmix_data
-    else:
-        filtered_data = pmix_data[pmix_data['Pitcher'] == selected_pitcher]
+    #if selected_pitcher == 'All Pitchers':
+        #filtered_data = pmix_data
+    #else:
+        #filtered_data = pmix_data[pmix_data['Pitcher'] == selected_pitcher]
+    filtered_data = pmix_data.copy()
 
     # Apply styling to the filtered dataframe
     styled_df = filtered_data.style.format({
         'PC': '{:.0f}', 'Velo': '{:.1f}', 'Whiffs': '{:.0f}',
         'SwStr%': '{:.1%}', 'Strike%': '{:.1%}', 'Ball%': '{:.1%}',
-        'Brl%': '{:.1%}'
-    })
+        'Brl%': '{:.1%}', 'pfx_x': '{:.1f}', 'pfx_z': '{:.1f}',
+        'Horiz': '{:.1f}', 'Vert': '{:.1f}', 'Avg Horiz': '{:.1f}',
+        'Horiz Diff': '{:.1f}', 'Vert Diff': '{:.1f}',
+        'Avg Vert': '{:.1f}', 'Velo Diff': '{:.1f}',})
 
     # Update the dataframe placeholder with the new dataframe
     with dataframe_container.container():
