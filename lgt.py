@@ -874,6 +874,27 @@ def getPMixData(livedb: pd.DataFrame, cplist: List[str]) -> pd.DataFrame:
 # -----------------------------
 # UI rendering (simple + fast)
 # -----------------------------
+
+def with_percent_format(df: pd.DataFrame, percent_cols: List[str]) -> Tuple[pd.DataFrame, dict]:
+    """
+    Streamlit percent formatting helper:
+    - assumes percent columns are stored as fractions (e.g., 0.123)
+    - displays them as 12.3% (0.0% style)
+    """
+    if df is None or df.empty:
+        return df, {}
+
+    show = df.copy()
+    cfg: dict = {}
+
+    for c in percent_cols:
+        if c in show.columns:
+            # convert fraction -> percent for display only
+            show[c] = pd.to_numeric(show[c], errors="coerce").fillna(0) * 100.0
+            cfg[c] = st.column_config.NumberColumn(c, format="%.1f%%")
+
+    return show, cfg
+
 def render_scores_and_leaders(scoreboard_df: pd.DataFrame, hitboxes: pd.DataFrame, pitboxes: pd.DataFrame, current_time: str):
     st.markdown(f"## MLB DW Live Game Tracker (Last Update {current_time})")
 
@@ -909,7 +930,8 @@ def render_pitcher_detail(p_data: pd.DataFrame, current_time: str):
     if p_data.empty:
         st.info("No pitch-by-pitch data yet.")
         return
-    st.dataframe(p_data, hide_index=True, width=1200, height=520)
+    p_show, p_cfg = with_percent_format(p_data, ["SwStr%", "Strike%", "Ball%"])
+    st.dataframe(p_show, column_config=p_cfg, hide_index=True, width=1200, height=520)
 
 
 def render_pitch_mix(pmix_data: pd.DataFrame, current_time: str):
@@ -925,7 +947,8 @@ def render_pitch_mix(pmix_data: pd.DataFrame, current_time: str):
     selected_pitcher = st.selectbox("Select Pitcher", pitcher_options)
 
     view = pmix_data if selected_pitcher == "All Pitchers" else pmix_data[pmix_data["Pitcher"] == selected_pitcher]
-    st.dataframe(view, hide_index=True, width=1200, height=760)
+    view_show, view_cfg = with_percent_format(view, ["SwStr%", "Strike%", "Ball%", "Brl%"])
+    st.dataframe(view_show, column_config=view_cfg, hide_index=True, width=1200, height=760)
 
 
 def render_exit_velos(hrs: pd.DataFrame, evs: pd.DataFrame, current_time: str):
