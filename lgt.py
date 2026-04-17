@@ -1160,6 +1160,80 @@ def with_percent_format(df: pd.DataFrame, percent_cols: List[str]) -> Tuple[pd.D
 
     return show, cfg
 
+def _render_game_detail_panel(
+    game_key: str,
+    hitboxes: pd.DataFrame,
+    pitboxes: pd.DataFrame,
+):
+    """Renders an inline detail panel for the selected game card."""
+    st.markdown(
+        f"""
+        <div style="background:#ffffff;border:1px solid #dce3f0;border-radius:14px;
+                    padding:20px 24px;margin:12px 0 20px;
+                    box-shadow:0 4px 20px rgba(37,99,235,0.10);
+                    border-top:4px solid #2563eb;">
+            <div style="font-size:1.1rem;font-weight:800;color:#1a2744;margin-bottom:2px;">
+                📋 {game_key} — Game Detail
+            </div>
+            <div style="font-size:0.75rem;color:#94a3b8;">Click the same card again to close</div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    # Filter hitboxes and pitboxes to just teams in this game
+    try:
+        away_t, home_t = game_key.split(" @ ")
+        away_t = away_t.strip()
+        home_t = home_t.strip()
+        game_teams = {away_t, home_t}
+    except Exception:
+        st.warning("Could not parse game teams.")
+        return
+
+    game_hits = hitboxes[hitboxes["Team"].isin(game_teams)].copy() if not hitboxes.empty else pd.DataFrame()
+    game_pits = pitboxes[pitboxes["Team"].isin(game_teams)].copy() if not pitboxes.empty else pd.DataFrame()
+
+    tab_hit, tab_pit = st.tabs([f"🏏 Hitting — {game_key}", f"⚾ Pitching — {game_key}"])
+
+    with tab_hit:
+        if game_hits.empty:
+            st.info("No hitting data for this game yet.")
+        else:
+            # Split by team
+            c1, c2 = st.columns(2)
+            for col, team in zip([c1, c2], [away_t, home_t]):
+                team_hits = game_hits[game_hits["Team"] == team].copy()
+                if team_hits.empty:
+                    continue
+                team_hits = team_hits.sort_values("DKPts", ascending=False)
+                show_cols = [c for c in ["Player", "DKPts", "H", "R", "HR", "RBI", "SB", "2B", "3B", "BB", "SO"] if c in team_hits.columns]
+                col.markdown(
+                    f'<div style="font-size:0.78rem;font-weight:700;color:#1a2744;text-transform:uppercase;'
+                    f'letter-spacing:0.5px;margin-bottom:6px;border-left:3px solid #2563eb;padding-left:8px;">{team}</div>',
+                    unsafe_allow_html=True,
+                )
+                col.dataframe(team_hits[show_cols], hide_index=True, use_container_width=True)
+
+    with tab_pit:
+        if game_pits.empty:
+            st.info("No pitching data for this game yet.")
+        else:
+            c1, c2 = st.columns(2)
+            for col, team in zip([c1, c2], [away_t, home_t]):
+                team_pits = game_pits[game_pits["Team"] == team].copy()
+                if team_pits.empty:
+                    continue
+                team_pits = team_pits.sort_values("DKPts", ascending=False)
+                show_cols = [c for c in ["Pitcher", "Line", "DKPts", "GS"] if c in team_pits.columns]
+                col.markdown(
+                    f'<div style="font-size:0.78rem;font-weight:700;color:#1a2744;text-transform:uppercase;'
+                    f'letter-spacing:0.5px;margin-bottom:6px;border-left:3px solid #2563eb;padding-left:8px;">{team}</div>',
+                    unsafe_allow_html=True,
+                )
+                col.dataframe(team_pits[show_cols], hide_index=True, use_container_width=True)
+
+
 def render_scores_and_leaders(
     scoreboard_df: pd.DataFrame,
     hitboxes: pd.DataFrame,
@@ -1212,6 +1286,10 @@ def render_scores_and_leaders(
     # --- Scorecard grid ---
     st.markdown('<div class="section-title">Live Scores</div>', unsafe_allow_html=True)
 
+    # Init selected game in session state
+    if "selected_game" not in st.session_state:
+        st.session_state["selected_game"] = None
+
     if not scoreboard_df.empty:
         # Build status map: matchup string -> game_status code
         status_map: Dict[str, str] = {}
@@ -1221,7 +1299,7 @@ def render_scores_and_leaders(
             matchup_key = f"{away_abbr} @ {home_abbr}"
             status_map[matchup_key] = g.get("game_status", "")
 
-        # Build list of card dicts first, then render in column grid
+        # Build list of card dicts
         card_data = []
         for _, row in scoreboard_df.iterrows():
             game_key = str(row.get("Game", ""))
@@ -1259,15 +1337,42 @@ def render_scores_and_leaders(
         if not card_data:
             st.markdown('<div class="alert-info">All games finished. Uncheck "Hide Finished Games" to see results.</div>', unsafe_allow_html=True)
         else:
-            # Render cards 5 per row using st.columns — always 5 cols so cards stay same width
+            # CSS for the card select buttons
+            st.markdown("""
+                <style>
+                /* Game card select buttons — compact, ghost style */
+                div[data-testid="stButton"] > button[kind="secondary"] {
+                    width: 100% !important;
+                    border-radius: 0 0 10px 10px !important;
+                    border: 1px solid #e2e8f0 !important;
+                    border-top: none !important;
+                    background: #f8fafc !important;
+                    color: #64748b !important;
+                    font-size: 0.72rem !important;
+                    padding: 4px 8px !important;
+                    margin-top: -6px !important;
+                    box-shadow: none !important;
+                }
+                div[data-testid="stButton"] > button[kind="secondary"]:hover {
+                    background: #eff6ff !important;
+                    color: #2563eb !important;
+                    border-color: #bfdbfe !important;
+                }
+                </style>
+            """, unsafe_allow_html=True)
+
             CARDS_PER_ROW = 5
             for row_start in range(0, len(card_data), CARDS_PER_ROW):
                 row_cards = card_data[row_start : row_start + CARDS_PER_ROW]
                 cols = st.columns(CARDS_PER_ROW)
                 for col, c in zip(cols, row_cards):
+                    is_selected = st.session_state["selected_game"] == c["game_key"]
                     top_color = "#16a34a" if c["is_live"] else ("#94a3b8" if c["is_final"] else "#2563eb")
                     away_color = "#16a34a" if c["away_r"] > c["home_r"] else "#1a2744"
                     home_color = "#16a34a" if c["home_r"] > c["away_r"] else "#1a2744"
+                    border_style = f"2px solid {top_color}" if is_selected else "1px solid #dce3f0"
+                    shadow_style = f"0 0 0 3px {top_color}33, 0 4px 16px rgba(0,0,0,0.10)" if is_selected else "0 2px 8px rgba(0,0,0,0.06)"
+
                     if c["is_live"]:
                         status_html = '<span style="background:#dcfce7;color:#15803d;font-size:0.68rem;font-weight:700;padding:2px 8px;border-radius:20px;">● LIVE</span>'
                     elif c["is_final"]:
@@ -1275,9 +1380,11 @@ def render_scores_and_leaders(
                     else:
                         status_html = f'<span style="background:#eff6ff;color:#2563eb;font-size:0.68rem;font-weight:600;padding:2px 8px;border-radius:20px;">{c["inning_display"]}</span>'
 
+                    click_hint = ' <span style="font-size:0.6rem;color:#2563eb;margin-left:6px;">▼ open</span>' if is_selected else ' <span style="font-size:0.6rem;color:#cbd5e1;margin-left:6px;">▼ details</span>'
+
                     card_html = f"""
-                    <div style="background:#ffffff;border:1px solid #dce3f0;border-radius:12px;padding:14px 16px;
-                                box-shadow:0 2px 8px rgba(0,0,0,0.06);position:relative;overflow:hidden;margin-bottom:8px;">
+                    <div style="background:#ffffff;border:{border_style};border-radius:12px 12px 0 0;padding:14px 16px 12px;
+                                box-shadow:{shadow_style};position:relative;overflow:hidden;">
                         <div style="position:absolute;top:0;left:0;right:0;height:4px;background:{top_color};border-radius:12px 12px 0 0;"></div>
                         <div style="font-size:0.68rem;color:#94a3b8;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;margin-top:2px;">{c["game_key"]}</div>
                         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
@@ -1291,10 +1398,24 @@ def render_scores_and_leaders(
                                 <div style="font-size:2.2rem;font-weight:900;color:{home_color};line-height:1;">{c["home_r"]}</div>
                             </div>
                         </div>
-                        <div>{status_html}</div>
+                        <div style="display:flex;align-items:center;">{status_html}{click_hint}</div>
                     </div>
                     """
                     col.markdown(card_html, unsafe_allow_html=True)
+                    # Button sits flush below the card (border-radius on top = 0)
+                    btn_label = "▲ Close" if is_selected else "▼ View Stats"
+                    if col.button(btn_label, key=f"card_btn_{c['game_key']}", use_container_width=True):
+                        if st.session_state["selected_game"] == c["game_key"]:
+                            st.session_state["selected_game"] = None  # toggle off
+                        else:
+                            st.session_state["selected_game"] = c["game_key"]
+                        st.rerun()
+
+            # --- Game detail panel ---
+            selected = st.session_state.get("selected_game")
+            if selected:
+                _render_game_detail_panel(selected, hitboxes, pitboxes)
+
     else:
         st.markdown('<div class="alert-info">No scoreboard data yet — check back once games begin.</div>', unsafe_allow_html=True)
 
