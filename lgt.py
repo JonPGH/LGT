@@ -38,7 +38,255 @@ from urllib3.util.retry import Retry
 # -----------------------------
 # Streamlit config
 # -----------------------------
-st.set_page_config(page_title="MLB Data Warehouse Live Game Tracker (v2)", layout="wide")
+st.set_page_config(
+    page_title="⚾ MLB Live Game Tracker",
+    layout="wide",
+    initial_sidebar_state="expanded",
+)
+
+# -----------------------------
+# Global CSS — clean light theme
+# -----------------------------
+st.markdown(
+    """
+    <style>
+    /* ---------- base ---------- */
+    html, body, [data-testid="stAppViewContainer"] {
+        background: #f4f6fa !important;
+    }
+    [data-testid="stSidebar"] {
+        background: #1a2744 !important;
+    }
+    [data-testid="stSidebar"] * {
+        color: #e8edf6 !important;
+    }
+    [data-testid="stSidebar"] .stRadio label,
+    [data-testid="stSidebar"] .stSlider label,
+    [data-testid="stSidebar"] .stCheckbox label {
+        color: #c5d0e8 !important;
+        font-size: 0.85rem !important;
+    }
+    [data-testid="stSidebar"] hr {
+        border-color: #2e3f6a !important;
+    }
+
+    /* ---------- page header ---------- */
+    .tracker-header {
+        background: linear-gradient(135deg, #0d2060 0%, #1a4fa8 60%, #2563eb 100%);
+        border-radius: 14px;
+        padding: 20px 28px 16px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        box-shadow: 0 4px 18px rgba(13,32,96,0.18);
+    }
+    .tracker-header h1 {
+        margin: 0;
+        font-size: 1.65rem;
+        font-weight: 800;
+        color: #ffffff;
+        letter-spacing: -0.3px;
+    }
+    .tracker-header .sub {
+        color: #93b4e8;
+        font-size: 0.82rem;
+        margin-top: 3px;
+    }
+    .update-badge {
+        background: rgba(255,255,255,0.12);
+        border: 1px solid rgba(255,255,255,0.25);
+        border-radius: 20px;
+        padding: 6px 14px;
+        color: #d0e4ff;
+        font-size: 0.78rem;
+        white-space: nowrap;
+    }
+
+    /* ---------- section headers ---------- */
+    .section-title {
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: #1a2744;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        border-left: 4px solid #2563eb;
+        padding-left: 10px;
+        margin: 18px 0 10px;
+    }
+
+    /* ---------- scoreboard cards ---------- */
+    .scoreboard-wrap {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 16px;
+    }
+    .score-card {
+        background: #ffffff;
+        border: 1px solid #dce3f0;
+        border-radius: 12px;
+        padding: 12px 16px;
+        min-width: 230px;
+        flex: 1 1 230px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        position: relative;
+        overflow: hidden;
+    }
+    .score-card::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #2563eb, #38bdf8);
+    }
+    .score-card.final::before {
+        background: linear-gradient(90deg, #64748b, #94a3b8);
+    }
+    .score-card.live::before {
+        background: linear-gradient(90deg, #16a34a, #4ade80);
+        animation: pulse-bar 2s ease-in-out infinite;
+    }
+    @keyframes pulse-bar {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.55; }
+    }
+    .score-card .matchup {
+        font-size: 0.72rem;
+        color: #64748b;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 6px;
+    }
+    .score-card .teams-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .score-card .team-block {
+        text-align: center;
+    }
+    .score-card .team-abbr {
+        font-size: 1.3rem;
+        font-weight: 800;
+        color: #1a2744;
+    }
+    .score-card .team-runs {
+        font-size: 2rem;
+        font-weight: 900;
+        color: #2563eb;
+        line-height: 1;
+    }
+    .score-card .team-runs.winning {
+        color: #16a34a;
+    }
+    .score-card .separator {
+        font-size: 1.1rem;
+        color: #cbd5e1;
+        font-weight: 300;
+    }
+    .score-card .status-row {
+        margin-top: 8px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .badge-live {
+        background: #dcfce7;
+        color: #15803d;
+        font-size: 0.68rem;
+        font-weight: 700;
+        padding: 2px 8px;
+        border-radius: 20px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    .badge-final {
+        background: #f1f5f9;
+        color: #64748b;
+        font-size: 0.68rem;
+        font-weight: 700;
+        padding: 2px 8px;
+        border-radius: 20px;
+        text-transform: uppercase;
+    }
+    .badge-inning {
+        background: #eff6ff;
+        color: #2563eb;
+        font-size: 0.7rem;
+        font-weight: 600;
+        padding: 2px 8px;
+        border-radius: 20px;
+    }
+
+    /* ---------- stat tiles ---------- */
+    .stat-tiles {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-bottom: 16px;
+    }
+    .stat-tile {
+        background: #ffffff;
+        border: 1px solid #dce3f0;
+        border-radius: 10px;
+        padding: 12px 18px;
+        text-align: center;
+        flex: 1 1 100px;
+        box-shadow: 0 1px 5px rgba(0,0,0,0.05);
+    }
+    .stat-tile .tile-val {
+        font-size: 1.6rem;
+        font-weight: 800;
+        color: #2563eb;
+        line-height: 1.1;
+    }
+    .stat-tile .tile-lbl {
+        font-size: 0.68rem;
+        color: #94a3b8;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-top: 2px;
+    }
+
+    /* ---------- dataframe overrides ---------- */
+    [data-testid="stDataFrame"] {
+        border-radius: 10px !important;
+        overflow: hidden !important;
+        border: 1px solid #dce3f0 !important;
+    }
+
+    /* ---------- sidebar nav ---------- */
+    [data-testid="stSidebar"] .stRadio [role="radio"] {
+        border-radius: 8px;
+        padding: 4px 8px;
+    }
+    .sidebar-logo {
+        font-size: 1.3rem;
+        font-weight: 800;
+        color: #ffffff;
+        letter-spacing: -0.5px;
+        margin-bottom: 4px;
+    }
+    .sidebar-sub {
+        font-size: 0.72rem;
+        color: #7b8fc2;
+        margin-bottom: 16px;
+    }
+
+    /* ---------- alerts ---------- */
+    .alert-info {
+        background: #eff6ff;
+        border: 1px solid #bfdbfe;
+        border-radius: 8px;
+        padding: 10px 14px;
+        color: #1e40af;
+        font-size: 0.83rem;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
 
 
 # -----------------------------
@@ -166,11 +414,28 @@ def fetch_json(url: str, timeout: Tuple[float, float] = (3.05, 12.0)) -> Dict[st
 # Navigation
 # -----------------------------
 def sidebar_menu() -> str:
-    st.sidebar.title("Navigation")
-    return st.sidebar.radio(
-        "Select a page:",
-        ["Scores & Leaders", "Pitcher Detail", "Pitch Mix Data", "Exit Velos"],
+    st.sidebar.markdown('<div class="sidebar-logo">⚾ MLB Live Tracker</div>', unsafe_allow_html=True)
+    st.sidebar.markdown('<div class="sidebar-sub">MLB Data Warehouse</div>', unsafe_allow_html=True)
+
+    page = st.sidebar.radio(
+        "Navigate",
+        ["📊 Scores & Leaders", "🎯 Pitcher Detail", "🔀 Pitch Mix", "💥 Exit Velos", "📈 Game Pace"],
+        label_visibility="collapsed",
     )
+
+    st.sidebar.markdown("---")
+
+    # Hide finished games — persisted in session_state
+    if "hide_finished" not in st.session_state:
+        st.session_state["hide_finished"] = False
+
+    st.session_state["hide_finished"] = st.sidebar.checkbox(
+        "Hide Finished Games",
+        value=st.session_state["hide_finished"],
+        key="hide_finished_cb",
+    )
+
+    return page
 
 
 # -----------------------------
@@ -895,29 +1160,177 @@ def with_percent_format(df: pd.DataFrame, percent_cols: List[str]) -> Tuple[pd.D
 
     return show, cfg
 
-def render_scores_and_leaders(scoreboard_df: pd.DataFrame, hitboxes: pd.DataFrame, pitboxes: pd.DataFrame, current_time: str):
-    st.markdown(f"## MLB DW Live Game Tracker (Last Update {current_time})")
+def render_scores_and_leaders(
+    scoreboard_df: pd.DataFrame,
+    hitboxes: pd.DataFrame,
+    pitboxes: pd.DataFrame,
+    current_time: str,
+    today_games: List[Dict[str, Any]],
+):
+    hide_finished = st.session_state.get("hide_finished", False)
 
+    # --- Header ---
+    live_count = sum(1 for g in today_games if g.get("game_status") == "I")
+    final_count = sum(1 for g in today_games if g.get("game_status") == "F")
+    sched_count = sum(1 for g in today_games if g.get("game_status") not in ("I", "F"))
+
+    st.markdown(
+        f"""
+        <div class="tracker-header">
+            <div>
+                <h1>⚾ MLB Live Game Tracker</h1>
+                <div class="sub">MLB Data Warehouse · Live Scores &amp; Leaders</div>
+            </div>
+            <div class="update-badge">🕐 Last update: {current_time} ET</div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    # --- Quick-stat tiles ---
+    total_hrs = int(hitboxes["HR"].sum()) if not hitboxes.empty and "HR" in hitboxes.columns else 0
+    total_ks = int(pitboxes["SO"].sum()) if not pitboxes.empty and "SO" in pitboxes.columns else 0
+    total_sb = int(hitboxes["SB"].sum()) if not hitboxes.empty and "SB" in hitboxes.columns else 0
+    total_h = int(hitboxes["H"].sum()) if not hitboxes.empty and "H" in hitboxes.columns else 0
+
+    tiles = [
+        (live_count, "Live Games"), (final_count, "Final"), (sched_count, "Scheduled"),
+        (total_hrs, "Home Runs"), (total_ks, "Strikeouts"), (total_sb, "Stolen Bases"), (total_h, "Hits"),
+    ]
+    tile_cols = st.columns(len(tiles))
+    for col, (val, lbl) in zip(tile_cols, tiles):
+        col.markdown(
+            f"""<div style="background:#ffffff;border:1px solid #dce3f0;border-radius:10px;
+                            padding:12px 8px;text-align:center;box-shadow:0 1px 5px rgba(0,0,0,0.05);">
+                    <div style="font-size:1.6rem;font-weight:800;color:#2563eb;line-height:1.1;">{val}</div>
+                    <div style="font-size:0.68rem;color:#94a3b8;text-transform:uppercase;letter-spacing:0.5px;margin-top:2px;">{lbl}</div>
+                </div>""",
+            unsafe_allow_html=True,
+        )
+    st.markdown("<div style='margin-bottom:8px'></div>", unsafe_allow_html=True)
+
+    # --- Scorecard grid ---
+    st.markdown('<div class="section-title">Live Scores</div>', unsafe_allow_html=True)
+
+    if not scoreboard_df.empty:
+        # Build status map: matchup string -> game_status code
+        status_map: Dict[str, str] = {}
+        for g in today_games:
+            away_abbr = teamnamedict.get(g.get("away_team", ""), g.get("away_team", ""))
+            home_abbr = teamnamedict.get(g.get("home_team", ""), g.get("home_team", ""))
+            matchup_key = f"{away_abbr} @ {home_abbr}"
+            status_map[matchup_key] = g.get("game_status", "")
+
+        # Build list of card dicts first, then render in column grid
+        card_data = []
+        for _, row in scoreboard_df.iterrows():
+            game_key = str(row.get("Game", ""))
+            status_code = status_map.get(game_key, "")
+            is_final = status_code == "F"
+            is_live = status_code == "I"
+
+            if hide_finished and is_final:
+                continue
+
+            score_str = str(row.get("Score", ""))
+            inning_str = str(row.get("Inn", ""))
+
+            away_abbr_s, home_abbr_s, away_r, home_r = game_key, "—", 0, 0
+            try:
+                parts = score_str.split(" @ ")
+                away_part = parts[0]
+                home_part = parts[1]
+                away_abbr_s = away_part.split(" (")[0]
+                away_r = int(away_part.split("(")[1].rstrip(")"))
+                home_abbr_s = home_part.split(" (")[0]
+                home_r = int(home_part.split("(")[1].rstrip(")"))
+            except Exception:
+                pass
+
+            inning_display = "Final" if inning_str == "F" else (f"Inn {inning_str}" if inning_str.isdigit() else inning_str)
+            card_data.append({
+                "game_key": game_key,
+                "away": away_abbr_s, "away_r": away_r,
+                "home": home_abbr_s, "home_r": home_r,
+                "is_final": is_final, "is_live": is_live,
+                "inning_display": inning_display,
+            })
+
+        if not card_data:
+            st.markdown('<div class="alert-info">All games finished. Uncheck "Hide Finished Games" to see results.</div>', unsafe_allow_html=True)
+        else:
+            # Render cards 5 per row using st.columns — always 5 cols so cards stay same width
+            CARDS_PER_ROW = 5
+            for row_start in range(0, len(card_data), CARDS_PER_ROW):
+                row_cards = card_data[row_start : row_start + CARDS_PER_ROW]
+                cols = st.columns(CARDS_PER_ROW)
+                for col, c in zip(cols, row_cards):
+                    top_color = "#16a34a" if c["is_live"] else ("#94a3b8" if c["is_final"] else "#2563eb")
+                    away_color = "#16a34a" if c["away_r"] > c["home_r"] else "#1a2744"
+                    home_color = "#16a34a" if c["home_r"] > c["away_r"] else "#1a2744"
+                    if c["is_live"]:
+                        status_html = '<span style="background:#dcfce7;color:#15803d;font-size:0.68rem;font-weight:700;padding:2px 8px;border-radius:20px;">● LIVE</span>'
+                    elif c["is_final"]:
+                        status_html = '<span style="background:#f1f5f9;color:#64748b;font-size:0.68rem;font-weight:700;padding:2px 8px;border-radius:20px;">FINAL</span>'
+                    else:
+                        status_html = f'<span style="background:#eff6ff;color:#2563eb;font-size:0.68rem;font-weight:600;padding:2px 8px;border-radius:20px;">{c["inning_display"]}</span>'
+
+                    card_html = f"""
+                    <div style="background:#ffffff;border:1px solid #dce3f0;border-radius:12px;padding:14px 16px;
+                                box-shadow:0 2px 8px rgba(0,0,0,0.06);position:relative;overflow:hidden;margin-bottom:8px;">
+                        <div style="position:absolute;top:0;left:0;right:0;height:4px;background:{top_color};border-radius:12px 12px 0 0;"></div>
+                        <div style="font-size:0.68rem;color:#94a3b8;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;margin-top:2px;">{c["game_key"]}</div>
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                            <div style="text-align:center;">
+                                <div style="font-size:1.0rem;font-weight:800;color:#1a2744;">{c["away"]}</div>
+                                <div style="font-size:2.2rem;font-weight:900;color:{away_color};line-height:1;">{c["away_r"]}</div>
+                            </div>
+                            <div style="color:#cbd5e1;font-size:0.9rem;">vs</div>
+                            <div style="text-align:center;">
+                                <div style="font-size:1.0rem;font-weight:800;color:#1a2744;">{c["home"]}</div>
+                                <div style="font-size:2.2rem;font-weight:900;color:{home_color};line-height:1;">{c["home_r"]}</div>
+                            </div>
+                        </div>
+                        <div>{status_html}</div>
+                    </div>
+                    """
+                    col.markdown(card_html, unsafe_allow_html=True)
+    else:
+        st.markdown('<div class="alert-info">No scoreboard data yet — check back once games begin.</div>', unsafe_allow_html=True)
+
+    # --- Leaders section ---
     col1, col2 = st.columns([1, 2])
 
     with col1:
-        st.markdown("### Live Scores")
-        st.dataframe(scoreboard_df, width=350, height=260, hide_index=True)
-
-        st.markdown("### Pitching Leaders (Starters)")
+        st.markdown('<div class="section-title">Pitching Leaders (Starters)</div>', unsafe_allow_html=True)
         if not pitboxes.empty:
-            pit_show = pitboxes.copy()
-            pit_show = pit_show.sort_values(by="DKPts", ascending=False)
+            pit_show = pitboxes.copy().sort_values(by="DKPts", ascending=False)
             pit_show = pit_show[pit_show["GS"] == 1]
+            if hide_finished:
+                live_teams = set()
+                for g in today_games:
+                    if g.get("game_status") == "I":
+                        live_teams.add(teamnamedict.get(g.get("away_team", ""), g.get("away_team", "")))
+                        live_teams.add(teamnamedict.get(g.get("home_team", ""), g.get("home_team", "")))
+                if live_teams:
+                    pit_show = pit_show[pit_show["Team"].isin(live_teams)]
             pit_show = pit_show[["Pitcher", "Team", "Line", "DKPts"]].head(30)
             st.dataframe(pit_show, hide_index=True, width=450, height=620)
         else:
             st.info("No boxscore pitching data yet.")
 
     with col2:
-        st.markdown("### Hitting Leaders")
+        st.markdown('<div class="section-title">Hitting Leaders</div>', unsafe_allow_html=True)
         if not hitboxes.empty:
             hit_show = hitboxes.copy().sort_values(by="DKPts", ascending=False)
+            if hide_finished:
+                live_teams = set()
+                for g in today_games:
+                    if g.get("game_status") == "I":
+                        live_teams.add(teamnamedict.get(g.get("away_team", ""), g.get("away_team", "")))
+                        live_teams.add(teamnamedict.get(g.get("home_team", ""), g.get("home_team", "")))
+                if live_teams:
+                    hit_show = hit_show[hit_show["Team"].isin(live_teams)]
             hit_show = hit_show[["Player", "Team", "DKPts", "H", "R", "HR", "RBI", "SB", "2B", "3B", "SO", "BB"]].head(60)
             st.dataframe(hit_show, hide_index=True, width=950, height=900)
         else:
@@ -925,18 +1338,49 @@ def render_scores_and_leaders(scoreboard_df: pd.DataFrame, hitboxes: pd.DataFram
 
 
 def render_pitcher_detail(p_data: pd.DataFrame, current_time: str):
-    st.markdown(f"## MLB DW Live Game Tracker (Last Update {current_time})")
-    st.markdown("### Pitcher Detailed Stats")
+    st.markdown(
+        f"""
+        <div class="tracker-header">
+            <div><h1>🎯 Pitcher Detail</h1><div class="sub">Live pitch-by-pitch stats</div></div>
+            <div class="update-badge">🕐 {current_time} ET</div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+    st.markdown('<div class="section-title">Pitcher Detailed Stats</div>', unsafe_allow_html=True)
     if p_data.empty:
         st.info("No pitch-by-pitch data yet.")
         return
-    p_show, p_cfg = with_percent_format(p_data, ["SwStr%", "Strike%", "Ball%"])
+
+    hide_finished = st.session_state.get("hide_finished", False)
+    show_df = p_data.copy()
+    if hide_finished:
+        show_df = show_df[show_df.get("Current Pitcher?", pd.Series(["Y"] * len(show_df))) == "Y"]
+
+    col_f, col_s = st.columns([1, 3])
+    with col_f:
+        filter_cp = st.checkbox("Current pitchers only", value=hide_finished)
+    with col_s:
+        pass
+
+    if filter_cp and "Current Pitcher?" in show_df.columns:
+        show_df = show_df[show_df["Current Pitcher?"] == "Y"]
+
+    p_show, p_cfg = with_percent_format(show_df, ["SwStr%", "Strike%", "Ball%"])
     st.dataframe(p_show, column_config=p_cfg, hide_index=True, width=1200, height=520)
 
 
 def render_pitch_mix(pmix_data: pd.DataFrame, current_time: str):
-    st.markdown(f"## MLB DW Live Game Tracker (Last Update {current_time})")
-    st.markdown("### Pitch Mix Detailed Stats")
+    st.markdown(
+        f"""
+        <div class="tracker-header">
+            <div><h1>🔀 Pitch Mix</h1><div class="sub">Pitch type breakdown with movement vs. season avg</div></div>
+            <div class="update-badge">🕐 {current_time} ET</div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+    st.markdown('<div class="section-title">Pitch Mix Detailed Stats</div>', unsafe_allow_html=True)
 
     if pmix_data.empty:
         st.info("No pitch-by-pitch data yet.")
@@ -952,19 +1396,34 @@ def render_pitch_mix(pmix_data: pd.DataFrame, current_time: str):
 
 
 def render_exit_velos(hrs: pd.DataFrame, evs: pd.DataFrame, current_time: str):
-    st.markdown(f"## MLB DW Live Game Tracker (Last Update {current_time})")
+    st.markdown(
+        f"""
+        <div class="tracker-header">
+            <div><h1>💥 Exit Velos</h1><div class="sub">Statcast batted ball data</div></div>
+            <div class="update-badge">🕐 {current_time} ET</div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
-    st.markdown("### Homers")
-    if hrs.empty:
-        st.info("No HR EVs yet.")
-    else:
-        st.dataframe(hrs, hide_index=True, width=1000)
+    col1, col2 = st.columns(2)
 
-    st.markdown("### Hardest Hit Balls (EV > 90)")
-    if evs.empty:
-        st.info("No batted ball EVs yet.")
-    else:
-        st.dataframe(evs[evs["EV"] > 90], hide_index=True, width=1000, height=650)
+    with col1:
+        st.markdown('<div class="section-title">⚾ Home Runs</div>', unsafe_allow_html=True)
+        if hrs.empty:
+            st.info("No home runs recorded yet.")
+        else:
+            st.dataframe(hrs, hide_index=True, width=620)
+
+    with col2:
+        ev_threshold = st.slider("Min EV (mph)", min_value=80, max_value=115, value=100, step=1)
+        st.markdown(f'<div class="section-title">🔥 Hard Hit Balls (EV ≥ {ev_threshold})</div>', unsafe_allow_html=True)
+        if evs.empty:
+            st.info("No batted ball data yet.")
+        else:
+            filtered_evs = evs[evs["EV"] >= ev_threshold]
+            st.markdown(f"**{len(filtered_evs)} batted balls** at or above {ev_threshold} mph")
+            st.dataframe(filtered_evs, hide_index=True, width=620, height=560)
 
 
 # -----------------------------
@@ -1049,6 +1508,71 @@ def build_snapshot(date_string: str, include_pbp: bool) -> Tuple[pd.DataFrame, p
     return scoreboard_df, all_hitboxes, all_pitboxes, livedb
 
 
+def render_game_pace(livedb: pd.DataFrame, scoreboard_df: pd.DataFrame, current_time: str):
+    """New page: game-level pace stats — pitches/PA, K%, BB%, HR/PA, etc."""
+    st.markdown(
+        f"""
+        <div class="tracker-header">
+            <div><h1>📈 Game Pace</h1><div class="sub">Per-game stats &amp; pace metrics</div></div>
+            <div class="update-badge">🕐 {current_time} ET</div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    if livedb.empty:
+        st.info("No play-by-play data available yet.")
+        return
+
+    hide_finished = st.session_state.get("hide_finished", False)
+
+    pace = livedb.groupby("game_pk", as_index=False).agg(
+        Away=("away_team_aff", "first"),
+        Home=("home_team_aff", "first"),
+        Pitches=("PitchesThrown", "sum"),
+        PA=("PA_flag", "sum"),
+        K=("IsStrikeout", "sum"),
+        BB=("IsWalk", "sum"),
+        HR=("IsHomer", "sum"),
+        Hits=("IsHit", "sum"),
+        Whiffs=("IsSwStr", "sum"),
+        BIP=("IsBIP", "sum"),
+        Brls=("IsBrl", "sum"),
+        game_status=("game_status", "first"),
+    )
+
+    if hide_finished:
+        pace = pace[pace["game_status"] != "F"]
+
+    if pace.empty:
+        st.info("No live games to display. Uncheck 'Hide Finished Games' to see all.")
+        return
+
+    pace["Matchup"] = pace["Away"] + " @ " + pace["Home"]
+    pace["P/PA"] = (pace["Pitches"] / pace["PA"].replace(0, np.nan)).round(2)
+    pace["K%"] = (pace["K"] / pace["PA"].replace(0, np.nan) * 100).round(1)
+    pace["BB%"] = (pace["BB"] / pace["PA"].replace(0, np.nan) * 100).round(1)
+    pace["SwStr%"] = (pace["Whiffs"] / pace["Pitches"].replace(0, np.nan) * 100).round(1)
+    pace["Brl%"] = (pace["Brls"] / pace["BIP"].replace(0, np.nan) * 100).round(1)
+    pace["Status"] = pace["game_status"].map({"I": "🟢 Live", "F": "⚫ Final"}).fillna("⏳ Sched")
+
+    display_cols = ["Matchup", "Status", "PA", "Pitches", "P/PA", "K", "BB", "HR", "Hits", "K%", "BB%", "SwStr%", "Brl%"]
+    pace_show = pace[display_cols].sort_values(by="Pitches", ascending=False)
+
+    st.markdown('<div class="section-title">Per-Game Pace Stats</div>', unsafe_allow_html=True)
+    st.dataframe(pace_show, hide_index=True, width=1200, height=450)
+
+    # Quick leaderboard: most Ks this game
+    st.markdown('<div class="section-title">Strikeout Leaders (Pitchers)</div>', unsafe_allow_html=True)
+    k_leaders = livedb.groupby(["player_name", "PitcherTeam_aff", "game_status"], as_index=False)["IsStrikeout"].sum()
+    if hide_finished:
+        k_leaders = k_leaders[k_leaders["game_status"] != "F"]
+    k_leaders = k_leaders.sort_values("IsStrikeout", ascending=False).head(15)
+    k_leaders.columns = ["Pitcher", "Team", "Status", "Ks"]
+    k_leaders["Status"] = k_leaders["Status"].map({"I": "🟢 Live", "F": "⚫ Final"}).fillna("⏳")
+    st.dataframe(k_leaders, hide_index=True, width=500)
+
+
 # -----------------------------
 # Main app
 # -----------------------------
@@ -1057,21 +1581,17 @@ def main():
 
     # Refresh controls
     st.sidebar.markdown("---")
-    refresh_seconds = st.sidebar.slider("Refresh interval (seconds)", 10, 120, 30, step=5)
-    st.sidebar.caption("This is TTL-based; all users share cached snapshots.")
+    refresh_seconds = st.sidebar.slider("Auto-refresh (seconds)", 10, 120, 30, step=5)
+    st.sidebar.caption("Shared cache across all users · TTL-based")
 
-    # Optional autorefresh (recommended)
+    # Optional autorefresh
     try:
         from streamlit_autorefresh import st_autorefresh  # type: ignore
-
         st_autorefresh(interval=refresh_seconds * 1000, key="mlbdw_refresh_v2")
     except Exception:
-        st.sidebar.warning("Tip: install streamlit-autorefresh for automatic updates. (pip install streamlit-autorefresh)")
+        st.sidebar.warning("💡 Install streamlit-autorefresh for auto updates.")
 
     eastern = pytz.timezone("US/Eastern")
-    #now_eastern = datetime.now(eastern)
-    #today_str = now_eastern.strftime("%Y-%m-%d")
-
     now_eastern = datetime.now(eastern)
     default_date = now_eastern.date()
 
@@ -1082,35 +1602,22 @@ def main():
     )
 
     date_str = chosen_date.strftime("%Y-%m-%d")
-
-    current_time = now_eastern.strftime("%I:%M")
+    current_time = now_eastern.strftime("%I:%M %p")
 
     # Pull snapshot (cached across all users)
-    needs_pbp = selected_page in ("Pitcher Detail", "Pitch Mix Data", "Exit Velos")
-
-    #scoreboard_df, all_hitboxes, all_pitboxes, livedb = build_snapshot(date_str)
+    needs_pbp = selected_page in ("🎯 Pitcher Detail", "🔀 Pitch Mix", "💥 Exit Velos", "📈 Game Pace")
     scoreboard_df, all_hitboxes, all_pitboxes, livedb = build_snapshot(date_str, include_pbp=needs_pbp)
 
-    # Basic status messaging
+    # Today's games for status checking / tile counts
     today_games = get_live_games(date_str)
-    statuses = [g.get("game_status") for g in today_games]
-    if ("I" not in statuses and "F" in statuses) and 1==2:
-        st.info("All games today are complete.")
-        if selected_page == "Scores & Leaders":
-            # still show final scoreboards from snapshot if present
-            render_scores_and_leaders(scoreboard_df, all_hitboxes, all_pitboxes, current_time)
-        return
-    if ("I" not in statuses) and 1==2:
-        st.info("No games currently live.")
-        if selected_page == "Scores & Leaders" and not scoreboard_df.empty:
-            render_scores_and_leaders(scoreboard_df, all_hitboxes, all_pitboxes, current_time)
-        return
 
-    # If we don't have PBP yet, still allow Scores & Leaders via boxscore
+    # If no PBP yet, show Scores & Leaders gracefully
     if livedb.empty:
-        if selected_page == "Scores & Leaders":
-            render_scores_and_leaders(scoreboard_df, all_hitboxes, all_pitboxes, current_time)
+        if selected_page == "📊 Scores & Leaders":
+            render_scores_and_leaders(scoreboard_df, all_hitboxes, all_pitboxes, current_time, today_games)
             st.caption("No Statcast play-by-play detected yet. Refreshing automatically.")
+        elif selected_page == "📈 Game Pace":
+            render_game_pace(pd.DataFrame(), scoreboard_df, current_time)
         else:
             st.info("No Statcast pitch-by-pitch data available yet. (Try Scores & Leaders for boxscore-only.)")
         return
@@ -1144,14 +1651,16 @@ def main():
         evs = pd.DataFrame(columns=["Hitter", "Team", "Pitcher", "EV", "Description"])
 
     # Render selected page
-    if selected_page == "Scores & Leaders":
-        render_scores_and_leaders(scoreboard_df, all_hitboxes, all_pitboxes, current_time)
-    elif selected_page == "Pitcher Detail":
+    if selected_page == "📊 Scores & Leaders":
+        render_scores_and_leaders(scoreboard_df, all_hitboxes, all_pitboxes, current_time, today_games)
+    elif selected_page == "🎯 Pitcher Detail":
         render_pitcher_detail(p_data, current_time)
-    elif selected_page == "Pitch Mix Data":
+    elif selected_page == "🔀 Pitch Mix":
         render_pitch_mix(pmix_data, current_time)
-    elif selected_page == "Exit Velos":
+    elif selected_page == "💥 Exit Velos":
         render_exit_velos(hrs, evs, current_time)
+    elif selected_page == "📈 Game Pace":
+        render_game_pace(livedb, scoreboard_df, current_time)
 
 
 if __name__ == "__main__":
